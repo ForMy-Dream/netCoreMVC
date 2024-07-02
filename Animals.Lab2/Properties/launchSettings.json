@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Animals.Lab2": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:8355;http://localhost:8356"
+    }
+  }
+}

@@ -3,6 +3,9 @@ using netCoreMVC.Models;
 using System.Diagnostics;
 using Newtonsoft.Json.Serialization;
 using netCoreMVC.Utils;
+using log4net.Repository;
+using log4net;
+using log4net.Config;
 
 internal class Program
 {
@@ -20,15 +23,15 @@ internal class Program
                        .AllowAnyHeader();
             });
         });
-
+        builder.Services.AddSingleton<ConsoleDemo>();
         builder.Services.AddHttpContextAccessor();
         var connectionString = builder.Configuration.GetConnectionString("ConStr");
         builder.Services.AddDbContext<ModelContext>(options =>
                   options.UseOracle(connectionString));
         // 全局配置 log4net
-        /*ILoggerRepository repository = LogManager.CreateRepository("LogRepository");
+        ILoggerRepository repository = LogManager.CreateRepository("LogRepository");
         // 读取配置文件
-        XmlConfigurator.Configure(repository, new FileInfo("Config/log4net.config"));*/
+        XmlConfigurator.Configure(repository, new FileInfo("Config/log4net.config"));
         // XmlConfigurator.ConfigureAndWatch(new FileInfo("Config/log4net.config"));
 
         builder.Services.AddControllers().AddNewtonsoftJson(options =>

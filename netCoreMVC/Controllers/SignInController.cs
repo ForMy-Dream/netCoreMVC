@@ -9,8 +9,6 @@ namespace netCoreMVC.Controllers
     [ApiController]
     public class SignInController : BaseBizController
     {
-    
-
         [HttpPost,HttpGet]
         public Dictionary<string,Object> Login([FromBody] JObject obj)
         {

@@ -24,7 +24,11 @@ namespace netCoreMVC.Utils
                 {
                     StatusCode = StatusCodes.Status401Unauthorized,
                     ContentType = "application/json",
-                    Content = JsonConvert.SerializeObject(new { message = "Unauthorized:认证失败" }) // 或者使用其他序列化方式
+                    Content = JsonConvert.SerializeObject(new {
+                        Success="false",
+                        message = "Unauthorized:认证失败" 
+                    
+                    }) // 或者使用其他序列化方式
                 };
             }
 

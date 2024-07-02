@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "BabyCarMain": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:8345;http://localhost:8348"
+    }
+  }
+}
