@@ -2,7 +2,7 @@
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
 using Microsoft.Extensions.Configuration;
-
+using Oracle.ManagedDataAccess.Types;
 
 namespace OrcaleDbHelper
 {
@@ -23,6 +23,59 @@ namespace OrcaleDbHelper
             // 从配置中获取连接字符串
 
         }
+        /// <summary>
+        /// 获取存储过程返回数据
+        /// </summary>
+        /// <param name="storedProcedureName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public DataTable ExecuteStoredProcedure(string storedProcedureName, DataParamCol parameters = null)
+        {
+            DataTable dataTable = new DataTable();
+
+            using (OracleConnection oracleConnection = new OracleConnection(connectionString))
+            {
+                using (OracleCommand oracleCommand = new OracleCommand(storedProcedureName, oracleConnection))
+                {
+                    oracleCommand.CommandType = CommandType.StoredProcedure;
+
+                    // 添加输入参数
+                    if (parameters != null)
+                    {
+                        OracleParameter[] values = parameters.ToArray();
+                        oracleCommand.Parameters.AddRange(values);
+                    }
+
+                    // 添加输出游标参数
+                    OracleParameter retCursor = new OracleParameter();
+                    retCursor.ParameterName = "RetCursor"; // 确保这个名称与存储过程中的游标参数匹配
+                    retCursor.Direction = ParameterDirection.Output;
+                    retCursor.OracleDbType = OracleDbType.RefCursor; // 使用 OracleDbType.RefCursor
+                    oracleCommand.Parameters.Add(retCursor);
+
+                    OracleDataAdapter oracleDataAdapter = new OracleDataAdapter(oracleCommand);
+
+                    try
+                    {
+                        oracleConnection.Open();
+                        oracleCommand.ExecuteNonQuery(); // 执行存储过程
+
+                        // 获取返回的游标数据
+                        using (OracleDataReader reader = ((OracleRefCursor)retCursor.Value).GetDataReader())
+                        {
+                            dataTable.Load(reader);
+                        }
+                    }
+                    finally
+                    {
+                        ((IDisposable)(object)oracleDataAdapter)?.Dispose();
+                    }
+                }
+            }
+
+            return dataTable;
+        }
+
 
         public int ExecuteQueryNo(string sql, DataParamCol parameters=null)
         {

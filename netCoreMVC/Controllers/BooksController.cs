@@ -41,7 +41,7 @@ namespace netCoreMVC.Controllers
         }
         [HttpGet, HttpPost]
         public Dictionary<string, object> TestMq()
-        {
+        {          
             Dictionary<string, object> dic = new Dictionary<string, object>();
             List<Book> infos = (from n in _context.Books
                                 select n).ToList();
