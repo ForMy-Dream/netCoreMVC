@@ -13,10 +13,10 @@ namespace WebApplication1.Controllers
              log = new LogHelper(this.GetType());
         }
 
-        public TestController(Type type)
+      /*  public TestController(Type type)
         {
             log = new LogHelper(type);
-        }
+        }*/
         [HttpPost,HttpGet]
         public string getString()
         {

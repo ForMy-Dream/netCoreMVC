@@ -19,7 +19,7 @@ namespace WebApplication1.Controllers
         {
             log = new LogHelper(type);
         }
-        public static T GetData<T>(JObject obj, string key)
+        public static T GetData<T>(JObject obj, string path = null)
         {
             // 检查传入的JObject是否为空
             if (obj == null)
@@ -27,14 +27,28 @@ namespace WebApplication1.Controllers
                 throw new ArgumentNullException(nameof(obj));
             }
 
-            // 检查传入的键是否为空或者JObject中是否存在该键
-            if (string.IsNullOrEmpty(key) || !obj.ContainsKey(key))
+            // 如果路径为空，直接返回 JObject 的根元素
+            if (string.IsNullOrEmpty(path))
             {
-                return default(T);
+                return obj.ToObject<T>(); // 将根元素转换为指定类型 T
             }
 
-            // 从JObject中获取指定键的值，并尝试将其转换为指定类型T
-            return obj[key].ToObject<T>();
+            // 根据点分隔的路径分割键
+            string[] keys = path.Split('.');
+
+            // 遍历每个键逐层获取值
+            JToken currentToken = obj;
+            foreach (var key in keys)
+            {
+                if (currentToken[key] == null)
+                {
+                    return default(T); // 如果某个层级的键不存在，返回默认值
+                }
+                currentToken = currentToken[key];
+            }
+
+            // 尝试将最后的 JToken 转换为指定类型 T
+            return currentToken.ToObject<T>();
         }
     }
 }
